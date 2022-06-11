@@ -2,9 +2,14 @@ from hashlib import new
 from lib2to3.pgen2 import driver
 from msilib.schema import File
 from pickle import TRUE
+from queue import PriorityQueue
+from re import T
+from tkinter import E
+from tkinter.tix import Tree
 from webbrowser import Chrome
 from requests import options
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import time
 import random
 import pyautogui
@@ -12,6 +17,33 @@ import PySimpleGUI as sg
 #Bibliotecas utilizadas Selenium, time
 # Baixar chromedrive conforme a versão do seu chrome 
 #Precisar baixar o e deixar na pasta de destino o chromedriver link para download https://chromedriver.chromium.org/downloads
+
+#=======================================Interface Gráfica ============================================
+layout =[
+    [sg.Checkbox('Perfil Novo', key='1'), sg.Checkbox('Perfil Usado', key='2')],
+    [sg.Button('Entrar')]
+
+]
+
+janela = sg.Window('Tela de login',layout)
+
+eventos, valores = janela.read()
+
+diaAquecimento = valores['1']
+
+
+if diaAquecimento == True:
+  diaAquecimento = 1
+
+  
+elif diaAquecimento == False:
+  diaAquecimento = 2
+
+else:
+  print('Abra o programa novamente e escolha o perfil')
+
+#=======================================Terminmou ============================================
+
 
 #Imagens
 imagens = [
@@ -70,6 +102,19 @@ comentarios = [
 'Ai eu dou valor'
 ]
 
+messenger = [
+  'Oi, tudo bem?',
+  'sou de sp e vc?',
+  'o que gosta de fazer?',
+  'eu adoro ouvir música e sair',
+  'adoro viajar e vc?',
+  'gostei do seu perfil',
+  'muito bom falar com vc',
+  'me chama mais vezes',
+  'beijos',
+  'obg, vc tb'
+]
+
 navegador = webdriver.ChromeOptions()
 navegador.add_extension('cookie.crx')
 navegador = webdriver.Chrome(chrome_options=navegador)
@@ -81,255 +126,240 @@ navegador.get("https://mbasic.facebook.com/")
 #Tempo para usuário colocar o cookie
 time.sleep(30)
 
-pyautogui.press('F5')
+# time do movimento entre os passos
+def timeacao():
+  time.sleep(random.choice(range(5,20)))
 
-postagensNum = 0
-while postagensNum <= postagensNum:
+# time do movimento entre uma tarefa e outra
+def timeevento():
+  time.sleep(random.choice(range(175,377)))
 
-    #=================== Reagindo a públicações ==============================
+# Se qualquer ação der errado retorna para a página inicial
+def inicial():
+    navegador.get("https://mbasic.facebook.com/")
 
-    try:
+#Assitindo Storys
+def storys():
+    timeacao()
+    navegador.get("https://m.facebook.com/")
+    timeacao()
+    navegador.find_element_by_xpath('//*[@id="story_tray"]').click()
 
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
 
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
+# Assistindo vídeos
+def videos():
+    timeacao()
+    navegador.get("https://m.facebook.com/watch/")
+    timeacao()
+    navegador.find_element_by_class_name('_53mw').click()
+    timeacao()
+    navegador.find_element_by_partial_link_text('Curtir').click()
 
-    time.sleep(random.choice(range(175,580)))
 
-    #=================== Reagindo a públicações ==============================
-    
-    try:
+# Reage a públicações
+def reacao():
+  
+  inicial()
+  timeacao()
+  navegador.find_element_by_link_text('Reagir').click()
+  timeacao()
+  navegador.find_element_by_xpath(random.choice(reacoes)).click()
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
 
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
 
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-     #=================== Terminou ==============================
+# Entra em grupos
+def grupos():
+  
+  inicial()
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="header"]/nav/a[8]').click()
+  timeacao()
+  navegador.find_element_by_link_text('Participar').click()
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
 
-    time.sleep(random.choice(range(175,580)))
+  
+# Faz postagem de texto
+def postandoTexto():
+  
+  inicial()
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/table/tbody/tr/td[2]/div/textarea').send_keys(random.choice(postagens))
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/table/tbody/tr/td[3]/div/input').click()
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
 
-     #=================== Reagindo a públicações ==============================
+  
+# Faz postagem de foto
+def postandoFoto():
+  
+   inicial()
+   timeacao()
+   navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/div[2]/span/div[1]/table/tbody/tr/td[2]/input').click()
 
-    try:
-
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-     #=================== Terminou ==============================
-
-    time.sleep(random.choice(range(175,580)))
-    
-    #=================== Entrando em grupos ==============================
-    try:
-
-      navegador.find_element_by_xpath('//*[@id="header"]/nav/a[8]').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_link_text('Participar').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-     #=================== Terminou ==============================
-
-    time.sleep(random.choice(range(175,580)))
-
-    #=================== Reagindo a públicações ==============================
-    try:
-
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
-    
-    time.sleep(random.choice(range(175,580)))
-
-      #=================== Reagindo a públicações ==============================
-    try:
-
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
-
-    time.sleep(random.choice(range(175,580)))
-
-    #=================== Postando Mensagem de texto ==============================
-    try:
-
-      navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/table/tbody/tr/td[2]/div/textarea').send_keys(random.choice(postagens))
+   #Clica para selecionar o arquivo da foto
+   timeacao()
+   navegador.find_element_by_class_name('ba').click()
       
-      #Envia a mensagem de texto
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/table/tbody/tr/td[3]/div/input').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
+   #Seleciona a foto 
+   timeacao()
+   pyautogui.write(random.choice(imagens))
 
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
+   #Clica no Enter do teclado para confirmar a seleção
+   timeacao()
+   pyautogui.press('Enter')
+   timeacao()
 
-    time.sleep(random.choice(range(175,580)))
+   #Clica no botão previa
+   time.sleep(random.choice(range(15,30)))
+   navegador.find_element_by_xpath('//*[@id="root"]/table/tbody/tr/td/form/div[3]/input[1]').click()
 
-   #=================== Reagindo a públicações ==============================
-    try:
+   #Faz a postagem da foto
+   timeacao()
+   navegador.find_element_by_xpath('//*[@id="composer_form"]/input[19]').click()
+   timeacao()
+   navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
 
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
-
-    time.sleep(random.choice(range(175,580)))
-
-    #=================== Reagindo a públicações ==============================
-    try:
-
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
-
-    time.sleep(random.choice(range(175,580)))
     
-    #=================== Postando Foto ==============================
-    try:
+# Faz postagem de comentários
+def comentario():
+  
+    inicial()
+    timeacao()
+    navegador.find_element_by_partial_link_text('coment').click()
+    timeacao()
+    navegador.find_element_by_partial_link_text('Comentar').click()
+    timeacao()
+    navegador.find_element_by_xpath('//*[@id="root"]/section/form/div[1]/textarea').send_keys(random.choice(comentarios))
+    timeacao()
+    navegador.find_element_by_xpath('//*[@id="root"]/section/form/div[4]/input').click()
+    timeacao()
     
-      navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/div[2]/span/div[1]/table/tbody/tr/td[2]/input').click()
+# Faz postagem de Sentimentos
+def sentindoSe():
+  
+    #Sentir-se
+    y = [1,2,6,9,10]
+    reacao = (random.choice(y))
 
-      #Clica para selecionar o arquivo da foto
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_class_name('ba').click()
-      
-      #Seleciona a foto 
-      time.sleep(random.choice(range(5,20)))
-      pyautogui.write(random.choice(imagens))
+    #Sentir-se 2
+    x = range(1,18)
+    reacao2 = (random.choice(x))
 
-      #Clica no Enter do teclado para confirmar a seleção
-      time.sleep(random.choice(range(5,20)))
-      pyautogui.press('Enter')
-      time.sleep(random.choice(range(5,20)))
+    inicial()
+    timeacao()
+    navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/div[2]/span/div[2]/table/tbody/tr/td[2]/input').click()
+    timeacao()
+    navegador.find_element_by_xpath(f'//*[@id="root"]/table/tbody/tr/td/ul/li[{reacao}]/div/table/tbody/tr/td[2]/a').click()
+    timeacao()
+    navegador.find_element_by_xpath(f'//*[@id="root"]/table/tbody/tr/td/ul/li[{reacao2}]/table/tbody/tr/td/table/tbody/tr/td[2]/a').click()
+    timeacao()
+    navegador.find_element_by_xpath('//*[@id="composer_form"]/input[18]').click()
 
-      #Clica no botão previa
-      time.sleep(random.choice(range(15,30)))
-      navegador.find_element_by_xpath('//*[@id="root"]/table/tbody/tr/td/form/div[3]/input[1]').click()
+# Compartilha públicações
+def compartilharPublicacao():
 
-      #Faz a postagem da foto
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="composer_form"]/input[19]').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
+    inicial()  
+    timeacao()
+    navegador.find_element_by_partial_link_text('Compartilhar').click()
+    timeacao()
+    navegador.find_element_by_xpath('//*[@id="composer_form"]/input[18]').click()
 
-    except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
+def batepapo():
+  
+  navegador.get("https://m.facebook.com/messages/")
+  timeacao()
+  navegador.find_element_by_class_name('_5b6s').click()
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="composerInput"]').send_keys(random.choice(messenger))
+  timeacao()
+  navegador.find_element_by_xpath('/html/body/div[1]/div/div[4]/div/div[4]/div/form/div[1]/div[3]/div[4]/button[1]').click()
+  timeacao()
+  navegador.find_element_by_class_name('_5s61').click()
+  timeacao()
+  navegador.find_element_by_xpath('//*[@id="root"]/div[1]/div/div[2]/select/option[5]').click()
 
-    time.sleep(random.choice(range(175,580)))
 
-    #=================== Reagindo a públicações ==============================
 
+if diaAquecimento == 1:
+  for d in range(1,6):
     try:
-
-      navegador.find_element_by_link_text('Reagir').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath(random.choice(reacoes)).click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-
+      grupos()
+      timeevento()
+    except Exception as a:
+      print('Não entrou no grupo')
+    try:  
+      comentario()
+      timeevento()
     except Exception as e:
-      navegador.get("https://mbasic.facebook.com/")
-    #=================== Terminou ==============================
+      print('Não comentou')
+    try:    
+      postandoTexto()
+      timeevento()
+    except Exception as i:
+      print('Não postou')
+    try:    
+      postandoFoto()
+      timeevento()
+    except Exception as o:
+      print('Não postou foto')
+    try:    
+      videos()
+      timeevento()
+    except Exception as u:
+      print('Não assistiu vídeo')  
 
-    time.sleep(random.choice(range(175,580)))
-
-    #=================== Comentário ==============================
+elif diaAquecimento == 2:
+  for x in range(1,11):
     try:
-      
-      navegador.find_element_by_partial_link_text('coment').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_partial_link_text('Comentar').click()
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="root"]/section/form/div[1]/textarea').send_keys(random.choice(comentarios))
-      time.sleep(random.choice(range(5,20)))
-      navegador.find_element_by_xpath('//*[@id="root"]/section/form/div[4]/input').click()
-      time.sleep(random.choice(range(5,20)))
-    
+      grupos()
+      timeevento()
+    except Exception as a:
+      print('Não entrou no grupo')
+    try:  
+      comentario()
+      timeevento()
     except Exception as e:
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-    #=================== Terminou ==============================
-
-    time.sleep(random.choice(range(175,580)))
-
-    #=================== Sentindo-se ==============================
+      print('Não comentou')
+    try:    
+      postandoTexto()
+      timeevento()
+    except Exception as i:
+      print('Não postou')
+    try:    
+      postandoFoto()
+      timeevento()
+    except Exception as o:
+      print('Não postou foto')
+    try:    
+      videos()
+      timeevento()
+    except Exception as u:
+      print('Não assistiu vídeo') 
     try:
-        #Sentir-se
-        y = [1,2,6,9,10]
-        reacao = (random.choice(y))
-
-        #Sentir-se 2
-        x = range(1,18)
-        reacao2 = (random.choice(x))
-
-        time.sleep(random.choice(range(5,20)))
-        navegador.find_element_by_xpath('//*[@id="mbasic-composer-form"]/div[2]/span/div[2]/table/tbody/tr/td[2]/input').click()
-        time.sleep(random.choice(range(5,20)))
-        navegador.find_element_by_xpath(f'//*[@id="root"]/table/tbody/tr/td/ul/li[{reacao}]/div/table/tbody/tr/td[2]/a').click()
-        time.sleep(random.choice(range(5,20)))
-        navegador.find_element_by_xpath(f'//*[@id="root"]/table/tbody/tr/td/ul/li[{reacao2}]/table/tbody/tr/td/table/tbody/tr/td[2]/a').click()
-        time.sleep(random.choice(range(5,20)))
-        navegador.find_element_by_xpath('//*[@id="composer_form"]/input[18]').click()
-
-    except Exception as e:
-      navegador.find_element_by_xpath('//*[@id="header"]/form/table/tbody/tr/td[1]/a/img').click()
-        #=================== Terminou ==============================
-   
-    time.sleep(random.choice(range(175,580)))
-
-    #=================== Compartilhar publicações ==============================
-
+      batepapo()
+      timeevento()
+    except Exception as t:
+      print('Não envou mensagem')
     try:
-        time.sleep(random.choice(range(5,20)))
-        navegador.find_element_by_partial_link_text('Compartilhar').click()
-        time.sleep(random.choice(range(5,20)))
-        navegador.find_element_by_xpath('//*[@id="composer_form"]/input[18]').click()
-        
-    except Exception as e:
-        navegador.get('https://mbasic.facebook.com/')
-    #=================== Terminou ==============================
+      compartilharPublicacao()
+      timeevento()
+    except Exception as r:
+      print('Não compatilhou')
+    try:
+      sentindoSe()
+      timeevento()
+    except Exception as w:
+      print('Não postou Sentir-se')
+    try:
+      storys()
+      timeevento()
+    except Exception as q:
+      print('Não postou Storys')       
+else:
+  print('A aplicação falhou')
 
-    time.sleep(random.choice(range(175,580)))
+
+
